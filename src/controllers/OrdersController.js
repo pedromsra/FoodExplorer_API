@@ -140,7 +140,7 @@ class OrdersController {
     async update(request, response){
         const { id } = request.params;
 
-        const { adress, payment, meals } = request.body
+        const { adress, payment, meals, status } = request.body
         
         const user_id = request.user.id;
 
@@ -154,9 +154,7 @@ class OrdersController {
         let checkAdress
         let adress_id
 
-        if(!adress){
-            throw new AppError("É necessário informar o endereço de destino", 401)
-        } else {
+        if(adress){
             if(!adress.cep){
                 throw new AppError("O campo CEP é obrigatório", 401);
             } else {
@@ -248,9 +246,7 @@ class OrdersController {
         let valueCalculated = 0;
         let value;
 
-        if(!meals){
-            throw new AppError("É necessário informar as refeições do pedido", 401);
-        } else {
+        if(meals){
             await knex("orderMeal").where({order_id: id}).delete()
 
             for(let meal = 0; meal < meals.length; meal++){
@@ -272,11 +268,13 @@ class OrdersController {
         order.adress_id = adress_id ?? order.adress_id;
         order.payment_id = payment_id ?? order.payment_id;
         order.value = value ?? order.value;
+        order.status = status ?? order.satatus;
 
         await knex("orders").where({id}).update({
             adress_id: order.adress_id,
             payment_id: order.payment_id,
-            value: order.value
+            value: order.value,
+            status: order.status
         })
 
 

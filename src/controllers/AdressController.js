@@ -33,6 +33,12 @@ class AdressController {
             throw new AppError("O campo cidade é obrigatório", 401)
         }
 
+        const checkAdress = await knex("adress").where({user_id}).where({cep}).where({number})
+
+        if(checkAdress) {
+            throw new AppError("Endereço já cadastrado", 401)
+        }
+
         const adress = await knex("adress").insert({
             user_id,
             nickname,

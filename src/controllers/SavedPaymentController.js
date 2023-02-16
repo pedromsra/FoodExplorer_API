@@ -2,6 +2,8 @@ const knex = require("../database/knex");
 
 const AppError = require("../utils/AppError");
 
+const {hash} = require("bcryptjs")
+
 class SavedPaymentsController {
     async create (request, response) {
         const { cardName, cardNumber, cardExpiresIn, csc } = request.body;
@@ -40,12 +42,14 @@ class SavedPaymentsController {
             }
         }
 
+        const hashedCsc = await hash(csc, 8);
+
         await knex("savedPaymentMethod").insert({
             user_id,
             cardName,
             cardNumber,
             cardExpiresIn,
-            csc
+            csc: hashedCsc
         })
 
         return response.json()
@@ -77,13 +81,15 @@ class SavedPaymentsController {
                 throw new AppError(`Código de segurança inválido, o código deve conter ${defaultCscLength} dígitos`, 401)
             }
         }
+        
+        const hashedCsc = await hash(csc, 8);
 
         const payment = await knex("savedPaymentMethod").where({id}).where({user_id}).first();
 
         payment.cardName = cardName ?? payment.cardName;
         payment.cardNumber = cardNumber ?? payment.cardNumber;
         payment.cardExpiresIn = cardExpiresIn ?? payment.cardExpiresIn;
-        payment.csc = csc ?? payment.csc;
+        payment.csc = hashedCsc ?? payment.csc;
 
         await knex("savedPaymentMethod").where({id}).where({user_id}).update({
             cardName: payment.cardName,

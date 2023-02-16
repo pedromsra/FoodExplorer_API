@@ -36,14 +36,48 @@ class UsersController {
 
     async update  (request, response) {
         // Para usar o id do usuário no controller usar: user_id = request.user.id
-    }
+        const user_id = request.user.id;
 
-    async index (request, response) {
-        // Para usar o id do usuário no controller usar: user_id = request.user.id
-    }
+        const {name, email, passwordOld, passwordNew} = request.body;
 
-    async show (request, response) {
-        // Para usar o id do usuário no controller usar: user_id = request.user.id
+        if(!user_id){
+            throw new AppError("Você deve estar logado para alterar as informações de usuário", 401);
+        }
+
+        const user = await knex("users").where({id: user_id}).first();
+        
+        user.name = name ?? user.name;
+        user.email = email ?? user.email;
+        
+        if (passwordNew) {
+            if(!passwordOld){
+                throw new AppError("Você deve informar a sua senha antiga", 401);
+            }
+            
+            
+            const passwordCheck = await compare(passwordOld, user.password);
+            
+            if (!passwordCheck) {
+                throw new AppError("Senha antiga não confere", 401);
+            }
+            
+            if(passwordNew.length < 6) {
+                throw new AppError("Sua nova senha deve conter no mínimo 6 caracteres", 401)
+            }
+            
+            user.password = await hash(passwordNew, 8);
+        }
+
+
+        await knex("users").where({id:user_id}).update({
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            updated_at: knex.fn.now()
+        })
+
+        return response.json()
+
     }
 
     async delete (request, response) {

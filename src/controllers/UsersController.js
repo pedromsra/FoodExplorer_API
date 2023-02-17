@@ -1,10 +1,7 @@
-const knex = require("../database/knex");
-
 const AppError = require("../utils/AppError");
 
-const { hash, compare } = require("bcryptjs");
-
 const UserCreateService = require("../services/Users/UserCreateService");
+const UserUpdateService = require("../services/Users/UserUpdateService");
 
 const UserRepository = require("../repositories/UserRepository");
 
@@ -35,57 +32,35 @@ class UsersController {
     }
 
     async update  (request, response) {
-        // Para usar o id do usuário no controller usar: user_id = request.user.id
         const user_id = request.user.id;
 
         const {name, email, passwordOld, passwordNew} = request.body;
 
-        if(!user_id){
-            throw new AppError("Você deve estar logado para alterar as informações de usuário", 401);
+        const userRepository = new UserRepository();
+        const userUpdateService = new UserUpdateService(userRepository);
+
+        try {
+            await userUpdateService.execute({user_id, name, email, passwordOld, passwordNew});
+        } catch (e) {
+            throw new AppError(e, 401);
         }
-
-        const user = await knex("users").where({id: user_id}).first();
-        
-        user.name = name ?? user.name;
-        user.email = email ?? user.email;
-        
-        if (passwordNew) {
-            if(!passwordOld){
-                throw new AppError("Você deve informar a sua senha antiga", 401);
-            }
-            
-            
-            const passwordCheck = await compare(passwordOld, user.password);
-            
-            if (!passwordCheck) {
-                throw new AppError("Senha antiga não confere", 401);
-            }
-            
-            if(passwordNew.length < 6) {
-                throw new AppError("Sua nova senha deve conter no mínimo 6 caracteres", 401)
-            }
-            
-            user.password = await hash(passwordNew, 8);
-        }
-
-
-        await knex("users").where({id:user_id}).update({
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            updated_at: knex.fn.now()
-        })
 
         return response.json()
 
     }
 
     async delete (request, response) {
-        const user_id = request.user.id;
+        // const user_id = request.user.id;
 
-        await knex("users").where({id: user_id}).delete();
+        // if(!user_id) {
+        //     throw new AppError("É necessário estar autenticado para excluir sua conta", 401)
+        // }
 
-        return response.json();
+        // const userRepository = new UserRepository();
+
+        // await userRepository.delete({user_id});
+
+        // return response.json();
     }
 }
 

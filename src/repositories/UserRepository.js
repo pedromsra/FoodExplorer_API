@@ -7,6 +7,11 @@ class UserRepository {
         return user;
     }
 
+    async findById(user_id){
+        const user = await knex("users").where({id: user_id}).first();
+        return user;
+    }
+
     async create({name, email, password, role}) {
         
         if(role) {
@@ -27,6 +32,28 @@ class UserRepository {
         })
 
         return {id: userId}
+    }
+
+    async update({user_id, name, email, password}){
+        const userId = await knex("users").where({id: user_id}).update({
+            name,
+            email,
+            password,
+            updated_at: knex.fn.now()
+        })
+
+        return {id: userId}
+    }
+
+    async updateAvatar({user_id, user}){
+        const userId = await knex("users").where({id: user_id}).update(user)
+
+        return {id: userId}
+    }
+
+    async delete({user_id}){
+        await knex("users").where({id: user_id}).delete()
+        return
     }
 }
 

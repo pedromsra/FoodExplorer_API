@@ -4,53 +4,28 @@ const AppError = require("../utils/AppError");
 
 const {hash} = require("bcryptjs")
 
+const PaymentsRepository = require("../repositories/PaymentsRepository");
+
+const PaymentsCreateService = require("../services/Payments/PaymentsCreateService")
+const PaymentsUpdateService = require("../services/Payments/PaymentsUpdateService")
+const PaymentsShowService = require("../services/Payments/PaymentsShowService")
+// const PaymentsDeleteService = require("../services/Payments/PaymentsDeleteService")
+
 class SavedPaymentsController {
     async create (request, response) {
         const { cardName, cardNumber, cardExpiresIn, csc } = request.body;
 
         const user_id = request.user.id
 
-        const defaultCardNumberLength = 16;
+        const paymentsRepository = new PaymentsRepository();
 
-        const defaultCscLength = 3;
+        const paymentsCreateService = new PaymentsCreateService(paymentsRepository);
 
-        if(!user_id){
-            throw new AppError("Você deve estar autenticado para cadastrar uma nova forma de pagamento", 401)
+        try {
+            await paymentsCreateService.execute({user_id, cardName, cardNumber, cardExpiresIn, csc })
+        } catch(e) {
+            throw new AppError(e, 401)
         }
-
-        if(!cardName) {
-            throw new AppError("É necessário informar o nome que consta no cartão",401)
-        }
-
-        if(!cardNumber) {
-            throw new AppError("É necessário informar o número do cartão",401)
-        } else {
-            if(cardNumber.length !== defaultCardNumberLength){
-                throw new AppError(`Número de cartão inválido, o número deve conter ${defaultCardNumberLength} dígitos`, 401)
-            }
-        }
-
-        if(!cardExpiresIn) {
-            throw new AppError("É necessário informar quando o cartão expira",401)
-        }
-
-        if(!csc) {
-            throw new AppError("É necessário informar o código de segurança",401)
-        } else {
-            if(csc.length !== defaultCscLength){
-                throw new AppError(`Código de segurança inválido, o código deve conter ${defaultCscLength} dígitos`, 401)
-            }
-        }
-
-        const hashedCsc = await hash(csc, 8);
-
-        await knex("savedPaymentMethod").insert({
-            user_id,
-            cardName,
-            cardNumber,
-            cardExpiresIn,
-            csc: hashedCsc
-        })
 
         return response.json()
     }
@@ -62,42 +37,15 @@ class SavedPaymentsController {
 
         const user_id = request.user.id
 
-        const defaultCardNumberLength = 16;
+        const paymentsRepository = new PaymentsRepository();
 
-        const defaultCscLength = 3;
+        const paymentsUpdateService = new PaymentsUpdateService(paymentsRepository);
 
-        if(!user_id){
-            throw new AppError("Você deve estar autenticado para atualizar uma nova forma de pagamento", 401)
+        try {
+            await paymentsUpdateService.execute({user_id, payment_id: id, cardName, cardNumber, cardExpiresIn, csc})
+        } catch(e) {
+            throw new AppError(e, 401);
         }
-        
-        if(cardNumber) {
-            if(cardNumber.length !== defaultCardNumberLength){
-                throw new AppError(`Número de cartão inválido, o número deve conter ${defaultCardNumberLength} dígitos`, 401)
-            }
-        }
-
-        if(csc) {
-            if(csc.length !== defaultCscLength){
-                throw new AppError(`Código de segurança inválido, o código deve conter ${defaultCscLength} dígitos`, 401)
-            }
-        }
-        
-        const hashedCsc = await hash(csc, 8);
-
-        const payment = await knex("savedPaymentMethod").where({id}).where({user_id}).first();
-
-        payment.cardName = cardName ?? payment.cardName;
-        payment.cardNumber = cardNumber ?? payment.cardNumber;
-        payment.cardExpiresIn = cardExpiresIn ?? payment.cardExpiresIn;
-        payment.csc = hashedCsc ?? payment.csc;
-
-        await knex("savedPaymentMethod").where({id}).where({user_id}).update({
-            cardName: payment.cardName,
-            cardNumber: payment.cardNumber,
-            cardExpiresIn: payment.cardExpiresIn,
-            csc: payment.csc,
-            updated_at: knex.fn.now()
-        })
 
         return response.json()
     }
@@ -105,11 +53,13 @@ class SavedPaymentsController {
     async index (request, response) {
         const user_id = request.user.id
 
+        const paymentsRepository = new PaymentsRepository();
+
         if(!user_id){
             throw new AppError("Você deve estar autenticado para visualizar suas formas de pagamento", 401)
         }
 
-        const myPayments = await knex("savedPaymentMethod").where({user_id}).select("id", "cardName", "cardNumber", "cardExpiresIn", "updated_at");
+        const myPayments = await paymentsRepository.index({user_id})
 
         return response.json(myPayments);
     }
@@ -119,26 +69,34 @@ class SavedPaymentsController {
 
         const user_id = request.user.id
 
-        if(!user_id){
-            throw new AppError("Você deve estar autenticado para cadastrar uma nova forma de pagamento", 401)
+        const paymentsRepository = new PaymentsRepository();
+
+        const paymentsShowService = new PaymentsShowService(paymentsRepository);
+
+        try {
+            const myPayment = await paymentsShowService.execute({user_id, payment_id: id});
+            return response.json(myPayment)
+        } catch (e) {
+            throw new AppError(e, 401)
         }
 
-        const myPayment = await knex("savedPaymentMethod").where({id}).where({user_id}).first().select("id", "cardName", "cardNumber", "cardExpiresIn", "updated_at");
-
-        return response.json(myPayment)
     }
+
     async delete (request, response) {
-        const { id } = request.params;
+        // Deletition will not work, just to maitain the Orders database, i can, in another moment, add something like a copy of a key_word or something like that, to be possible to delete.
+        // const { id } = request.params;
 
-        const user_id = request.user.id
+        // const user_id = request.user.id;
 
-        if(!user_id){
-            throw new AppError("Você deve estar autenticado para cadastrar uma nova forma de pagamento", 401)
-        }
+        // const paymentsRepository = new PaymentsRepository();
 
-        await knex("savedPaymentMethod").where({id}).where({user_id}).delete();
+        // if(!user_id){
+        //     throw new AppError("Você deve estar autenticado para cadastrar uma nova forma de pagamento", 401)
+        // }
 
-        return response.json()
+        // await knex("savedPaymentMethod").delete();
+
+        // return response.json()
     }
 }
 

@@ -1,5 +1,9 @@
-const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
+
+const FavoritesRepository = require("../repositories/FavoritesRepository");
+
+const FavoritesCreateService = require("../services/Favorites/FavoritesCreateService");
+const FavoritesDeleteService = require("../services/Favorites/FavoritesDeleteService");
 
 class FavoritesController {
     async create(request, response){
@@ -7,25 +11,15 @@ class FavoritesController {
         
         const user_id = request.user.id;
 
-        const mealId = Number(meal_id)
-                
-        const checkUser = await knex("users").where({id: user_id}).first();
-        
-        if (!checkUser) {
-            throw new AppError ("Faça login para favoritar um prato", 401);
+        const favoritesRepository = new FavoritesRepository();
+        const favoritesCreateService = new FavoritesCreateService(favoritesRepository);
+
+        try {
+            await favoritesCreateService.execute({user_id, meal_id})
+        } catch (e) {
+            throw new AppError(e, 401)
         }
         
-        const checkFavorite = await knex("favorites").where({user_id}).where({meal_id}).first();
-
-        if(checkFavorite){
-            return response.json()
-        }
-
-        await knex("favorites").insert({
-            meal_id,
-            user_id
-        })
-
         return response.json()
     }
 
@@ -33,20 +27,15 @@ class FavoritesController {
         const { meal_id } = request.params;
         
         const user_id = request.user.id;
-                
-        const checkUser = await knex("users").where({id: user_id}).first();
-        
-        if (!checkUser) {
-            throw new AppError ("Faça login para desfavoritar um prato", 401);
-        }
-        
-        const checkFavorite = await knex("favorites").where({user_id}).where({meal_id}).first();
 
-        if(!checkFavorite){
-            return response.json()
-        }
+        const favoritesRepository = new FavoritesRepository();
+        const favoritesDeleteService = new FavoritesDeleteService(favoritesRepository);
 
-        await knex("favorites").where({user_id}).where({meal_id}).delete()
+        try {
+            await favoritesDeleteService.execute({user_id, meal_id})
+        } catch (e) {
+            throw new AppError(e, 401)
+        }
 
         return response.json()
     }

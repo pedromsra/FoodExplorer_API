@@ -7,11 +7,11 @@ const UserRepository = require("../repositories/UserRepository");
 
 class UserAvatarController {
     async update(request, response) {
-        const diskStorage = new DiskStorage();
-
+        
         const user_id = request.user.id;
         const avatarFilename = request.file.filename;
-
+        
+        const diskStorage = new DiskStorage();
         const userRepository = new UserRepository();
         const userAvatarService = new UserAvatarService(userRepository, diskStorage);
 

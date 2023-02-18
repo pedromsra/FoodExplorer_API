@@ -11,7 +11,7 @@ class AdressCreateService {
 
         await adressCheckService.check({user_id, cep, number, streetName, city});
 
-        const adressCreated = this.adressRepository.create({user_id, nickname, cep, number, streetName, city});
+        const adressCreated = await this.adressRepository.create({user_id, nickname, cep, number, streetName, city});
 
         return adressCreated;
     }

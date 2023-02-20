@@ -1,9 +1,22 @@
+const { hash } = require("bcryptjs")
+
 const knex = require("../database/knex");
 
 class PaymentsRepository {
     async findPaymentByCardNumber({user_id, cardNumber}){
         const payment = await knex("savedPaymentMethod").where({user_id}).where({cardNumber}).first();
+        if(cardNumber && !payment){
+            const {defaultCardNumberLength} = await this.paymentsDefault()
+            throw `Número de cartão inválido, o número deve conter ${defaultCardNumberLength} dígitos`;
+        }
         return payment;
+    }
+
+    async paymentsDefault(){
+        const defaultCardNumberLength = 16;
+        const defaultCscLength = 3
+
+        return {defaultCardNumberLength, defaultCscLength}
     }
 
     async findByPaymentMethodId({payment_id}){
@@ -15,23 +28,27 @@ class PaymentsRepository {
     }
 
     async create({user_id, cardName, cardNumber, cardExpiresIn, csc}){
+        const hashedCsc = hash(csc, 8)
+
         const paymentCreated = await knex("savedPaymentMethod").insert({
             user_id,
             cardName,
             cardNumber,
             cardExpiresIn,
-            csc
+            csc: hashedCsc
         })
 
         return paymentCreated;
     }
 
     async update({payment_id, cardName, cardNumber, cardExpiresIn, csc}){
+        const hashedCsc = hash(csc, 8)
+
         const paymentUpdated = await knex("savedPaymentMethod").where({id: payment_id}).update({
             cardName,
             cardNumber,
             cardExpiresIn,
-            csc,
+            csc: hashedCsc,
             updated_at: knex.fn.now()
         })
 

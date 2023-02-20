@@ -3,7 +3,7 @@ class PaymentsCheckService{
         this.paymentsRepository = paymentsRepository;
     }
     
-    async check({user_id, payment_id, cardName, cardNumber, cardExpiresIn, csc, defaultCardNumberLength, defaultCscLength }){
+    async check({user_id, order, payment_id, cardName, cardNumber, cardExpiresIn, csc, defaultCardNumberLength, defaultCscLength }){
         
         if(!user_id){
             throw "Você deve estar autenticado para cadastrar uma nova forma de pagamento";
@@ -21,8 +21,8 @@ class PaymentsCheckService{
             }
 
             const cardNumberCheck = await this.paymentsRepository.findPaymentByCardNumber({user_id, cardNumber})
-
-            if(cardNumberCheck && cardNumberCheck.user_id === user_id) {
+            
+            if(cardNumberCheck && cardNumberCheck.user_id === user_id && !order) {
                 throw "Forma de pagamento já cadastrada"
             }
         }
@@ -30,7 +30,7 @@ class PaymentsCheckService{
         if(!cardExpiresIn) {
             throw "É necessário informar quando o cartão expira";
         }
-
+        
         if(!csc) {
             throw "É necessário informar o código de segurança";
         } else {
@@ -39,7 +39,6 @@ class PaymentsCheckService{
             }
         }
 
-
         if(payment_id){
             const payment = await this.paymentsRepository.findByPaymentMethodId({payment_id})
             
@@ -47,20 +46,20 @@ class PaymentsCheckService{
                 throw "Acesso negado"
             }
 
-            if(payment.id !== Number(payment_id)){
+            if(payment.id !== Number(payment_id) && !order){
                 throw "Forma de pagamento já cadastrada"
             }
 
             return payment
         } else {
+            
             const payment = await this.paymentsRepository.findPaymentByCardNumber({user_id, cardNumber});
 
-            if(payment){
+            if(payment && !order){
                 throw "Forma de pagamento já cadastrada"
             }
+            return payment
         }
-        
-        
     }
 }
 

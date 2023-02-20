@@ -31,9 +31,9 @@ class MealsImageController {
         // if (checkUserAdm.role === "default") {
         //     throw new AppError ("Você não tem acesso à alteração de imagem de um prato", 401);
         // }
-        // console.log(id)
+
         // const meal = await knex("meals").where({id}).first();
-        // console.log(meal)
+
         // if(meal.image){
         //     await diskStorage.deleteFile(meal.image);
         // }

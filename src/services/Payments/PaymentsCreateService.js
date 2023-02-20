@@ -1,5 +1,3 @@
-const {hash} = require("bcryptjs");
-
 const PaymentsCheckService = require("./PaymentsCheckService");
 
 class PaymentsCreateService{
@@ -16,9 +14,7 @@ class PaymentsCreateService{
 
         await paymentsCheckService.check({user_id, cardName, cardNumber, cardExpiresIn, csc, defaultCardNumberLength, defaultCscLength});
 
-        const hashedCsc = await hash(csc, 8);
-
-        const paymentCreated = await this.paymentsRepository.create({user_id, cardName, cardNumber, cardExpiresIn, csc: hashedCsc})
+        const paymentCreated = await this.paymentsRepository.create({user_id, cardName, cardNumber, cardExpiresIn, csc})
 
         return paymentCreated
     }

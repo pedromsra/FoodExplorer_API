@@ -3,7 +3,8 @@ class AdressCheckService {
         this.adressRepository = adressRepository;
     }
 
-    async check({user_id, adress_id, cep, number, streetName, city}){
+    async check({user_id, order, adress_id, cep, number, streetName, city}){
+        
         if(!user_id) {
             throw "É necessário estar logado para salvar um endereço"
         }
@@ -29,26 +30,30 @@ class AdressCheckService {
         if(!city){
             throw "O campo cidade é obrigatório";
         }
-        
+
         if(adress_id){
+            
             const adress = await this.adressRepository.findByAdressId({adress_id});
             
             if(adress.user_id !== user_id){
                 throw "Acesso negado"
             }
             
-            if(adress && adress.id !== adress_id) {
+            if(adress && adress.id !== adress_id && !order) {
                 throw "Endereço já cadastrado";
             }
+
+            return adress
         } else {
+
             const checkAdress = await this.adressRepository.findByCepAndNumber({user_id, cep, number});
     
-            if(checkAdress) {
+            if(checkAdress && !order) {
                 throw "Endereço já cadastrado";
             }
-        }
 
-        return
+            return checkAdress
+        }
     }
 }
 

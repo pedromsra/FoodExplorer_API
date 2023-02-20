@@ -3,6 +3,9 @@ const knex = require("../database/knex");
 class AdressRepository {
     async findByCepAndNumber({user_id, cep, number}){
         const checkAdress = await knex("adress").where({user_id}).where({cep}).where({number}).first()
+        if(cep && !checkAdress){
+            throw "CEP inválido, deve conter 5 dígitos e 3 dígitos, separado por hífen, no formato: 12345-123";
+        }
         return checkAdress;
     }
 

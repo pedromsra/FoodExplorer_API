@@ -37,7 +37,7 @@ class MealsUpdateService{
         const ingredientMealId = await this.mealsRepository.createIngredientMeal({meal_id, ingredients: ingredientsList});
         
         await this.mealsRepository.updateMeal({meal_id, title, type, description, price})
-        console.log("oi")
+
         return ingredientMealId
     }
 }

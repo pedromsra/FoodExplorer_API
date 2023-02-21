@@ -24,7 +24,7 @@ class OrdersRepository{
             value: order.value,
             status: order.status
         })
-
+        
         return orderUpdated;
     }
 
@@ -45,6 +45,7 @@ class OrdersRepository{
 
     async createOrderMeal({meals, order_id}){
         for(let meal = 0; meal < meals.length; meal++){
+            console.log(meals[meal].meal_id, meals[meal].quantity, order_id)
             await knex("orderMeal").insert({
                 meal_id: meals[meal].meal_id,
                 quantity: meals[meal].quantity,
@@ -68,12 +69,18 @@ class OrdersRepository{
         return orderList;
     }
 
-    async mealsByOrder({order_id}){
-        mealsList[order] = await knex("orderMeal")
-            .join("orders", "orders.id", "orderMeal.order_id")
-            .join("meals", "meals.id", "orderMeal.meal_id")
-            .select("meals.title", "orderMeal.quantity")
-            .where("orders.id", order_id)
+    async mealsByOrder({orders}){
+        let mealsList = [];
+
+        for(let order = 0; order < orders.length; order++){
+            mealsList[order] = await knex("orderMeal")
+                .join("orders", "orders.id", "orderMeal.order_id")
+                .join("meals", "meals.id", "orderMeal.meal_id")
+                .select("meals.title", "orderMeal.quantity")
+                .where("orders.id", orders[order].id)
+        }
+
+        return mealsList
     }
 
     async orderShow({order_id}){
@@ -83,6 +90,16 @@ class OrdersRepository{
             .select("id", "status", "updated_at", "value")
 
         return orderSearch
+    }
+
+    async mealByOrder({order_id}){
+        const meal = await knex("orderMeal")
+        .join("orders", "orders.id", "orderMeal.order_id")
+        .join("meals", "meals.id", "orderMeal.meal_id")
+        .select("meals.title", "meals.price", "orderMeal.quantity")
+        .where("orders.id", order_id)
+
+        return meal
     }
 }
 

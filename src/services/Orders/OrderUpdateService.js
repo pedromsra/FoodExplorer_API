@@ -19,7 +19,7 @@ class OrderUpdateService{
 
         const value = await this.ordersRepository.calculateValue({meals, mealsRepository: this.mealsRepository});
 
-        await this.ordersRepository.createOrderMeal({meals, order_id: order_id[0]})
+        await this.ordersRepository.createOrderMeal({meals, order_id})
 
         order.adress_id = adress_id ?? order.adress_id;
         order.payment_id = payment_id ?? order.payment_id;
@@ -27,7 +27,7 @@ class OrderUpdateService{
         order.status = status ?? order.satatus;
 
         const orderUpdated = await this.ordersRepository.updateOrder({order_id, order});
-
+        
         return orderUpdated;
     }
 }

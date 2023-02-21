@@ -13,6 +13,8 @@ const PaymentsCheckService = require("../services/Payments/PaymentsCheckService"
 
 const OrderCreateService = require("../services/Orders/OrderCreateService")
 const OrderUpdateService = require("../services/Orders/OrderUpdateService");
+const OrderIndexService = require("../services/Orders/OrderIndexService");
+const OrderShowService = require("../services/Orders/OrderShowService");
 
 class OrdersController {
     async create(request, response){
@@ -57,7 +59,7 @@ class OrdersController {
         const orderUpdateService = new OrderUpdateService(ordersRepository, orderCheckService, adressRepository, paymentsRepository, mealsRepository, adressCheckService, paymentsCheckService);
 
         try {
-            await orderUpdateService.execute({user_id, order_id: id, adress, payment, meals, status})
+            await orderUpdateService.execute({user_id, order_id: Number(id), adress, payment, meals, status})
         } catch(e) {
             throw new AppError(e, 401)
         }
@@ -68,65 +70,35 @@ class OrdersController {
     async index(request, response){
         const user_id = request.user.id;
 
-        if(!user_id){
-            throw new AppError("É necessário estar autenticado para pedidos", 401)
+        const ordersRepository = new OrdersRepository();
+
+        const orderIndexService = new OrderIndexService(ordersRepository);
+
+        try {
+            const orders = await orderIndexService.execute({user_id})
+            return response.json(orders)
+        } catch(e) {
+            throw new AppError(e, 401)
         }
 
-        const orderList = await knex("orders")
-        .where({user_id})
-        .select("id", "status", "updated_at", "value")
-
-        let mealsList = [];
-
-        for(let order = 0; order < orderList.length; order++){
-            mealsList[order] = await knex("orderMeal")
-                .join("orders", "orders.id", "orderMeal.order_id")
-                .join("meals", "meals.id", "orderMeal.meal_id")
-                .select("meals.title", "orderMeal.quantity")
-                .where("orders.id", orderList[order].id)
-        }
-
-        let meals
-        let mealCount = 0
-
-        const orders = orderList.map(order => {
-            meals = mealsList[mealCount]
-            mealCount++
-            return {
-                ...order,
-                meals
-            }
-        })
-
-        return response.json(orders)
-}
+    }
 
     async show(request, response){
         const { id } = request.params;    
         
         const user_id = request.user.id;
 
-        if(!user_id){
-            throw new AppError("É necessário estar autenticado para pedidos", 401)
+        const ordersRepository = new OrdersRepository();
+
+        const orderShowService = new OrderShowService(ordersRepository);
+
+        try {
+            const myOrder = await orderShowService.execute({user_id, order_id: Number(id)})
+            return response.json(myOrder)
+        } catch(e) {
+            throw new AppError(e, 401)
         }
 
-        const orderSearch = await knex("orders")
-        .where({id})
-        .first()
-        .select("id", "status", "updated_at", "value")
-
-        let meals = await knex("orderMeal")
-            .join("orders", "orders.id", "orderMeal.order_id")
-            .join("meals", "meals.id", "orderMeal.meal_id")
-            .select("meals.title", "meals.price", "orderMeal.quantity")
-            .where("orders.id", id)
-
-        const myOrder = {
-                ...orderSearch,
-                meals
-            }
-
-        return response.json(myOrder)
     }
 
     async delete(request, response){

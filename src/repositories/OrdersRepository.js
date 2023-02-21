@@ -45,7 +45,6 @@ class OrdersRepository{
 
     async createOrderMeal({meals, order_id}){
         for(let meal = 0; meal < meals.length; meal++){
-            console.log(meals[meal].meal_id, meals[meal].quantity, order_id)
             await knex("orderMeal").insert({
                 meal_id: meals[meal].meal_id,
                 quantity: meals[meal].quantity,

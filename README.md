@@ -1,11 +1,5 @@
 # Food Explorer API Documentation
 
-**Table of Contents**
-
-[TOCM]
-
-[TOC]
-
 ## Apresentation
 #### Backend para aplicação WEB de restaurante fictício;
 - Desenvolvida em NodeJS v16.15.1;

@@ -1,5 +1,11 @@
 # Food Explorer API Documentation
 
+**Table of Contents**
+
+[TOCM]
+
+[TOC]
+
 ## Apresentation
 #### Backend para aplicação WEB de restaurante fictício;
 - Desenvolvida em NodeJS v16.15.1;
@@ -439,3 +445,139 @@
 - response: status(200);
 
 ### "/orders"
+
+#### post
+
+- endereço: localhost:3003/orders;
+- info: cria um novo pedido para o usuário que está autenticado;
+- Expected request in JSON (exemple):
+
+		{
+			"adress":{
+				"nickname":"Casa",
+				"cep":"59123-123",
+				"number":"123",
+				"streetName": "Alameda das casas",
+				"city": "Cidade"
+			},
+			"payment":{
+				"cardName": "FULANO DA SILVA",
+				"cardNumber": "1234123456785678",
+				"cardExpiresIn": "2024-02",
+				"csc": "123"
+			},
+			"meals":[
+				{
+					"meal_id": 71,
+					"quantity": 5
+				},
+				{
+					"meal_id": 72,
+					"quantity": 3
+				}
+			]
+		};
+
+- response: status(200);
+
+#### put
+
+- endereço: localhost:3003/orders/:id;
+- info: modifica o pedido informado para o usuário que está autenticado;
+- Expected request in JSON (exemple):
+
+		{
+			"adress":{
+				"nickname":"Casa",
+				"cep":"59123-123",
+				"number":"123",
+				"streetName": "Alameda das casas",
+				"city": "Cidade"
+			},
+			"payment":{
+				"cardName": "FULANO DA SILVA",
+				"cardNumber": "1234123456785678",
+				"cardExpiresIn": "2024-02",
+				"csc": "123"
+			},
+			"meals":[
+				{
+					"meal_id": 71,
+					"quantity": 4
+				},
+				{
+					"meal_id": 72,
+					"quantity": 3
+				}
+			],
+			"status":"Em entrega"
+		};
+
+  - response: status(200);
+
+#### get
+
+- endereço: localhost:3003/orders;
+- info: retorna uma lista dos pedidos do usuário autenticado: **hitórico de pedidos**;
+- Expected request: somente autenticação do usuário;
+- response:
+
+		[
+			{
+				"id": 1,
+				"status": "em rota de entrega",
+				"updated_at": "2023-02-16 02:40:46",
+				"value": null,
+				"meals": [
+					{
+						"title": "Almoço Vegano",
+						"quantity": 4
+					},
+					{
+						"title": "feijoada",
+						"quantity": 2
+					}
+				]
+			},
+			{
+				"id": 2,
+				"status": "pendente",
+				"updated_at": "2023-02-16 02:41:31",
+				"value": null,
+				"meals": [
+					{
+						"title": "Almoço Vegano",
+						"quantity": 2
+					},
+					{
+						"title": "feijoada",
+						"quantity": 2
+					}
+				]
+			};
+
+#### get
+
+- endereço: localhost:3003/orders/:id;
+- info: retorna a refeição informada;
+- Expected request: somente autenticação do usuário;
+- response:
+
+		{
+			"id": 48,
+			"status": "em rota de entrega",
+			"updated_at": "2023-02-21 10:46:34",
+			"value": 170.25,
+			"meals": [
+				{
+					"title": "feijoada Vegana",
+					"price": 24.3,
+					"quantity": 4
+				},
+				{
+					"title": "Sobremesa Vegana",
+					"price": 24.35,
+					"quantity": 3
+				}
+			]
+		};

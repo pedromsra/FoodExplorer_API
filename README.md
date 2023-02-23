@@ -1,10 +1,48 @@
-# Food Explorer API Documentation
+# FoodExplorer API Documentation
 
-**Table of Contents**
+- [FoodExplorer API Documentation](#foodexplorer-api-documentation)
+	- [Apresentation](#apresentation)
+			- [Backend para aplicação WEB de restaurante fictício;](#backend-para-aplicação-web-de-restaurante-fictício)
+	- [Features](#features)
+	- [SQL Infos](#sql-infos)
+		- [Tabelas principais:](#tabelas-principais)
+		- [Tabelas de auxilio N x N:](#tabelas-de-auxilio-n-x-n)
+	- [Primeiros passos](#primeiros-passos)
+		- [Clonar repositório do github](#clonar-repositório-do-github)
+		- [Iniciando a aplicação](#iniciando-a-aplicação)
+	- [Paths](#paths)
+		- ["/sessions"](#sessions)
+			- [post](#post)
+		- ["/users"](#users)
+			- [post](#post-1)
+			- [put](#put)
+			- [patch](#patch)
+		- ["/adress"](#adress)
+			- [post](#post-2)
+			- [put](#put-1)
+			- [get](#get)
+			- [get](#get-1)
+		- ["/payments"](#payments)
+			- [post](#post-3)
+			- [put](#put-2)
+			- [get](#get-2)
+			- [get](#get-3)
+		- ["/meals"](#meals)
+			- [post](#post-4)
+			- [put](#put-3)
+			- [get](#get-4)
+			- [get](#get-5)
+			- [patch](#patch-1)
+		- ["/favorites"](#favorites)
+			- [post](#post-5)
+			- [delete](#delete)
+		- ["/orders"](#orders)
+			- [post](#post-6)
+			- [put](#put-4)
+			- [get](#get-6)
+			- [get](#get-7)
 
-[TOCM]
-
-[TOC]
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## Apresentation
 #### Backend para aplicação WEB de restaurante fictício;

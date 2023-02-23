@@ -42,11 +42,11 @@
 ### Iniciando a aplicação
 
 - Abrir terminal e digitar:
-  - cd /local da pasta onde a API está salva;
-  - npm intall;
-  - npm run dev;
+  - `$ cd /local_da_pasta_onde_a_API_está_salva;`
+  - `$ npm install`;
+  - `$ npm run dev`
 
-> Para os fins dessa documentação será considerado o servidor local de enderço localhos:3003;
+> Para os fins dessa documentação será considerado o servidor local de enderço localhost:3003;
 
 > Para alterar o servidor recomenda-se alterar no arquivo .env em PORT;
 
@@ -54,8 +54,8 @@
 
 ### "/sessions"
 
-- post
-  - endereço: localhos:3003/sessions
+- post:
+  - endereço: localhost:3003/sessions;
   - info: cria uma sessão, gerando o token que contem o id do usuário autenticado;
   - Expected request in JSON(exemple):
 
@@ -70,12 +70,28 @@
 			"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NzcxMTc1MzAsImV4cCI6MTY3NzIwMzkzMCwic3ViIjoiNDIifQ.OOSjT0sd_QKKsyHy058S8oVLTFG5W1kzWmV50cT358s"
 		}
 
-  - Comment: numa aplicação frontend, é recomendável salvar esse token no localhost, de modo a manter o usuário autenticado. Por padrão o tempo de sessão definido na aplicação é 1 dia.
+  - Comment: numa aplicação frontend, é recomendável salvar esse token no localhostt, de modo a manter o usuário autenticado. Por padrão o tempo de sessão definido na aplicação é 1 dia.
 
+> Exemplo no Insomnia para salvar token como variável de ambiente do insomnia e usar nas demais requisições http:
+- Dentro da pasta root do projeto do insomnia, na opção de general enviroments (canto superior esquerdo (ao lado da casinha)), clicar em "Manage Environments";
+- Clicar em Base Environment (lateral esqueda);
+- Digitar: 
+		{
+			"USER_TOKEN": "response"
+		}
+- Irá aparecer um menu, selecione Response > Body Attribute;
+- Clicar no campo em vermelho;
+- Selecionar:
+	- Request > [SESSIONS] PostCreate;
+	- Filter > $.token;
+	- Trigger Behavior > Always;
+
+> Exemplo no Insomnia para usar o token no header da requisição:
+- Na aba Authentication da requisição, selecionar Bearer Token e no campo Token digitar _.USER_TOKEN
 ### "/users"
 
-- post
-  - endereço: localhos:3003/users
+- post:
+  - endereço: localhost:3003/users;
   - info: cria um novo usuário;
   - expected request in JSON (exemple):
 
@@ -87,8 +103,8 @@
 
   - response: status(200);
 
-- put
-  - endereço: localhos:3003/users
+- put:
+  - endereço: localhost:3003/users;
   - info: atualiza as informações de usuário que está autenticado;
   - expected request in JSON (exemple):
 
@@ -100,23 +116,28 @@
 		}
   - response: status(200);
 
-  - response: status(200)
+  - response: status(200);
   - comment: agora é necessário informar a senha antiga e a nova. Os erros esperados são semelhantes aos erros esperados no método post;
 
-- patch
-  - endereço: localhos:3003/users/avatar
+- patch:
+  - endereço: localhost:3003/users/avatar;
   - info: modifica o avatar do usuário que está autenticado;
-  - Expected request in file: rótulo avatar com .image (.png, .jpeg, etc)
-   - exemplo no frontend: <input id="avatar" type="file" />
-   - exemplo no insomnia: Multipart Form > no lugar de "name" colocar "avatar" e selecionar o arquivo da imagem
-  - response: status(200)
+  - Expected request in file: rótulo avatar com .image (.png, .jpeg, etc);
+    - exemplo no frontend:
+
+    ```html
+	<input id="avatar" type="file" />;
+	```
+
+    - exemplo no insomnia: Multipart Form > no lugar de "name" colocar "avatar" e selecionar o arquivo da imagem;
+  - response: status(200);
 
 ### "/adress"
 
-- post
- - endereço: localhos:3003/adress
- - info: cria um novo endereço para o usuário que está autenticado;
- - Expected request in JSON (exemple):
+- post:
+  - endereço: localhost:3003/adress;
+  - info: cria um novo endereço para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
 
 		{
 			"nickname":"Casa",
@@ -124,14 +145,14 @@
 			"number":"123",
 			"streetName": "Rua de casas",
 			"city": "Cidade de bairros"
-		}
+		};
 
- - response: status(200)
+  - response: status(200);
 
-- put
- - endereço: localhos:3003/adress/:id
- - info: modifica o endereço informado para o usuário que está autenticado;
- - Expected request in JSON (exemple):
+- put:
+  - endereço: localhost:3003/adress/:id;
+  - info: modifica o endereço informado para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
 
 		{
 			"nickname":"Casa",
@@ -139,15 +160,15 @@
 			"number":"123",
 			"streetName": "Rua de casas",
 			"city": "Cidade de bairros"
-		}
+		};
 
- - response: status(200)
+ - response: status(200);
 
-- get
- - endereço: localhos:3003/adress
- - info: retorna uma lista dos endereços salvos do usuário autenticado;
- - Expected request: somente autenticação do usuário;
- - response:
+- get:
+  - endereço: localhost:3003/adress;
+  - info: retorna uma lista dos endereços salvos do usuário autenticado;
+  - Expected request: somente autenticação do usuário;
+  - response:
 
 		[
 			{
@@ -165,59 +186,59 @@
 				"city": "Cidade de bairros"
 			},
 			...
-		]
+		];
 
-- get
- - endereço: localhos:3003/adress/:id
- - info: retorna o endereço informado;
- - Expected request: somente autenticação do usuário;
- - response:
+- get:
+  - endereço: localhost:3003/adress/:id;
+  - info: retorna o endereço informado;
+  - Expected request: somente autenticação do usuário;
+  - response:
 
 		{
 			"id": 14,
 			"user_id": 42,
 			"nickname": "Casa",
-			"cep": "59080-540",
-			"number": "364",
-			"streetName": null,
-			"city": "Natal"
-		}
+			"cep": "59123-123",
+			"number": "123",
+			"streetName": "Rua das casas",
+			"city": "Cidade dos bairros"
+		};
 
 ### "/payments"
 
-- post
- - endereço: localhos:3003/payments
- - info: cria um novo pagamento para o usuário que está autenticado;
- - Expected request in JSON (exemple):
+- post:
+  - endereço: localhost:3003/payments;
+  - info: cria um novo pagamento para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
 
 		{
 			"cardName": "FLANO DA SILVA",
 			"cardNumber": "1234123456781234",
 			"cardExpiresIn": "2024-02",
 			"csc": "123"
-		}
+		};
 
- - response: status(200)
+  - response: status(200);
 
-- put
- - endereço: localhos:3003/payments/:id
- - info: modifica o pagamento informado para o usuário que está autenticado;
- - Expected request in JSON (exemple):
+- put:
+  - endereço: localhost:3003/payments/:id;
+  - info: modifica o pagamento informado para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
 
 		{
 			"cardName": "FLANO SILVA",
 			"cardNumber": "1234123456781235",
 			"cardExpiresIn": "2024-02",
 			"csc": "123"
-		}
+		};
 
- - response: status(200)
+  - response: status(200);
 
-- get
- - endereço: localhos:3003/payments
- - info: retorna uma lista dos pagamentos salvos do usuário autenticado;
- - Expected request: somente autenticação do usuário;
- - response:
+- get:
+  - endereço: localhost:3003/payments;
+  - info: retorna uma lista dos pagamentos salvos do usuário autenticado;
+  - Expected request: somente autenticação do usuário;
+  - response:
 
 		[
 			{
@@ -234,13 +255,13 @@
 				"cardExpiresIn": "2024-02",
 				"updated_at": "2023-02-19 20:32:07"
 			}
-		]
+		];
 
-- get
- - endereço: localhos:3003/payments/:id
- - info: retorna o pagamento informado;
- - Expected request: somente autenticação do usuário;
- - response:
+- get:
+  - endereço: localhost:3003/payments/:id;
+  - info: retorna o pagamento informado;
+  - Expected request: somente autenticação do usuário;
+  - response:
 
 		{
 			"id": 7,
@@ -248,14 +269,14 @@
 			"cardNumber": "1234123456781234",
 			"cardExpiresIn": "2024-02",
 			"updated_at": "2023-02-17 04:38:56"
-		}
+		};
 
 ### "/meals"
 
-- post
- - endereço: localhos:3003/meals
- - info: cria uma nova refeição para o usuário que está autenticado;
- - Expected request in JSON (exemple):
+- post:
+  - endereço: localhost:3003/meals;
+  - info: cria uma nova refeição para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
 
 		{
 			"title": "Camarão empanado",
@@ -267,14 +288,14 @@
 				"Batata frita palito",
 				"Molho especial"
 			]
-		}
+		};
 
- - response: status(200)
+  - response: status(200);
 
-- put
- - endereço: localhos:3003/meals/:id
- - info: modifica a refeição informada para o usuário que está autenticado;
- - Expected request in JSON (exemple):
+- put:
+  - endereço: localhost:3003/meals/:id;
+  - info: modifica a refeição informada para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
 
 		{
 			"title": "Camarão empanado cremoso",
@@ -285,18 +306,18 @@
 				"camarão",
 				"Batata frita palito"
 			]
-		}
+		};
 
- - response: status(200)
+  - response: status(200);
 
-- get
- - endereço: localhos:3003/meals
- - info: retorna uma lista das refeições salvas do usuário autenticado, **filtrada pelo título da refeição e/ou ingrediente**;
- - Expected request: 
-   - Query: Exemplo usando o Insomnia:
-     - no lugar de "name" colocar title e no lugar de value colocar "";
-     - no lugar de "name" colocar ingredient e no lugar de value colocar "arroz";
- - response:
+- get:
+  - endereço: localhost:3003/meals;
+  - info: retorna uma lista das refeições salvas do usuário autenticado, **filtrada pelo título da refeição e/ou ingrediente**;
+  - Expected request: 
+    - Query: Exemplo usando o Insomnia:
+      - no lugar de "name" colocar title e no lugar de value colocar "";
+      - no lugar de "name" colocar ingredient e no lugar de value colocar "arroz";
+  - response:
 
 		[
 			{
@@ -341,13 +362,13 @@
 					}
 				]
 			}
-		]
+		];
 
-- get
- - endereço: localhos:3003/meals/:id
- - info: retorna a refeição informada;
- - Expected request: somente autenticação do usuário;
- - response:
+- get:
+  - endereço: localhost:3003/meals/:id;
+  - info: retorna a refeição informada;
+  - Expected request: somente autenticação do usuário;
+  - response:
 
 		{
 			"id": 77,
@@ -368,18 +389,165 @@
 					"name": "Batata frita palito"
 				}
 			]
-		}
+		};
 
-- patch
-  - endereço: localhos:3003/meals/:id/image
+- patch:
+  - endereço: localhost:3003/meals/:id/image;
   - info: modifica a image da refeição informada;
-  - Expected request in file: rótulo image com .image (.png, .jpeg, etc)
-   - exemplo no frontend: <input id="image" type="file" />
-   - exemplo no insomnia: Multipart Form > no lugar de "name" colocar "image" e selecionar o arquivo da imagem
-  - response: status(200)
+  - Expected request in file: rótulo image com .image (.png, .jpeg, etc);
+   - exemplo no frontend:
+
+    ```html
+	<input id="image" type="file" />;
+	```
+
+   - exemplo no insomnia: Multipart Form > no lugar de "name" colocar "image" e selecionar o arquivo da imagem;
+  - response: status(200);
 
 ### "/favorites"
 
+- post:
+  - endereço: localhost/favorites/meal_id;
+  - info: salva uma refeição (/param: meal_id) como favorita para o usuário autenticado;
+  - Expected request: somente usuário autenticado;
+  - response: status(200);
 
+- delete:
+  - endereço: localhost/favorites/meal_id;
+  - info: deleta uma refeição (/param: meal_id) dos favoritos do usuário autenticado;
+  - Expected request: somente usuário autenticado;
+  - response: status(200);
 
 ### "/orders"
+
+- post:
+  - endereço: localhost:3003/orders;
+  - info: cria um novo pedido para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
+
+		{
+			"adress":{
+				"nickname":"Casa",
+				"cep":"59123-123",
+				"number":"123",
+				"streetName": "Alameda das casas",
+				"city": "Cidade"
+			},
+			"payment":{
+				"cardName": "FULANO DA SILVA",
+				"cardNumber": "1234123456785678",
+				"cardExpiresIn": "2024-02",
+				"csc": "123"
+			},
+			"meals":[
+				{
+					"meal_id": 71,
+					"quantity": 5
+				},
+				{
+					"meal_id": 72,
+					"quantity": 3
+				}
+			]
+		};
+
+  - response: status(200);
+
+- put:
+  - endereço: localhost:3003/orders/:id;
+  - info: modifica o pedido informado para o usuário que está autenticado;
+  - Expected request in JSON (exemple):
+
+		{
+			"adress":{
+				"nickname":"Casa",
+				"cep":"59123-123",
+				"number":"123",
+				"streetName": "Alameda das casas",
+				"city": "Cidade"
+			},
+			"payment":{
+				"cardName": "FULANO DA SILVA",
+				"cardNumber": "1234123456785678",
+				"cardExpiresIn": "2024-02",
+				"csc": "123"
+			},
+			"meals":[
+				{
+					"meal_id": 71,
+					"quantity": 4
+				},
+				{
+					"meal_id": 72,
+					"quantity": 3
+				}
+			],
+			"status":"Em entrega"
+		};
+
+  - response: status(200);
+
+- get:
+  - endereço: localhost:3003/orders;
+  - info: retorna uma lista dos pedidos do usuário autenticado: **hitórico de pedidos**;
+  - Expected request: somente autenticação do usuário;
+  - response:
+
+		[
+			{
+				"id": 1,
+				"status": "em rota de entrega",
+				"updated_at": "2023-02-16 02:40:46",
+				"value": null,
+				"meals": [
+					{
+						"title": "Almoço Vegano",
+						"quantity": 4
+					},
+					{
+						"title": "feijoada",
+						"quantity": 2
+					}
+				]
+			},
+			{
+				"id": 2,
+				"status": "pendente",
+				"updated_at": "2023-02-16 02:41:31",
+				"value": null,
+				"meals": [
+					{
+						"title": "Almoço Vegano",
+						"quantity": 2
+					},
+					{
+						"title": "feijoada",
+						"quantity": 2
+					}
+				]
+			};
+
+- get:
+  - endereço: localhost:3003/orders/:id;
+  - info: retorna a refeição informada;
+  - Expected request: somente autenticação do usuário;
+  - response:
+
+		{
+			"id": 48,
+			"status": "em rota de entrega",
+			"updated_at": "2023-02-21 10:46:34",
+			"value": 170.25,
+			"meals": [
+				{
+					"title": "feijoada Vegana",
+					"price": 24.3,
+					"quantity": 4
+				},
+				{
+					"title": "Sobremesa Vegana",
+					"price": 24.35,
+					"quantity": 3
+				}
+			]
+		};

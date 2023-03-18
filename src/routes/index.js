@@ -7,6 +7,8 @@ const favoritesRoutes = require("./favorites.routes");
 const adressRoutes = require("./adress.routes");
 const paymentsRoutes = require("./payments.routes");
 const ordersRoutes = require("./orders.routes");
+const pixRoutes = require("./pix.routes");
+
 
 console.log("####################################")
 console.log("####################################")

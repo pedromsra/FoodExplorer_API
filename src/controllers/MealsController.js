@@ -18,12 +18,11 @@ class MealsController {
         const mealsCreateService = new MealsCreateService(mealsRepository);
         
         try {
-            await mealsCreateService.execute({user_id, title, type, description, price, ingredients })
+            const meal_id = await mealsCreateService.execute({user_id, title, type, description, price, ingredients })
+            return response.json(meal_id);
         } catch (e) {
             throw new AppError(e, 401)
         }
-
-        return response.json();
     }
 
     async update(request, response){
@@ -55,6 +54,7 @@ class MealsController {
 
         try {
             const mealsWithIngredients = await mealsIndexService.execute({title, ingredient})
+            
             return response.json(mealsWithIngredients);
         } catch (e) {
             throw new AppError(e, 401)

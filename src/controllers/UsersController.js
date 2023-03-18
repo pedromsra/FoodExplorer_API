@@ -7,19 +7,19 @@ const UserRepository = require("../repositories/UserRepository");
 
 class UsersController {
     async create (request, response) {
-        const {name, email, password, role, role_password} = request.body
+        const {name, email, password, role_password} = request.body
 
         const userRepository = new UserRepository();
         const userCreateService = new UserCreateService(userRepository);
 
-        if (role) {
+        if (role_password) {
             try {
-                await userCreateService.execute({name, email, password, role, role_password})
+                await userCreateService.execute({name, email, password, console_password})
             } catch (e) {
                 throw new AppError(e, 401);
             }
 
-            return response.status(201).json({name, email, password, role});
+            return response.status(201).json({name, email, password}, "admin");
         }
 
         try {

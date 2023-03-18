@@ -10,10 +10,11 @@ class SessionsController {
 
         const userRepository = new UserRepository();
         const sessionsCreateService = new SessionsCreateService(userRepository);
-
+        
         try {
-            const token = await sessionsCreateService.execute({email, password})
-            return response.json(token)
+            const sessionResponse = await sessionsCreateService.execute({email, password})
+            const {user, token} = sessionResponse
+            return response.json({user, token})
         } catch (e) {
             throw new AppError(e, 401);
         }

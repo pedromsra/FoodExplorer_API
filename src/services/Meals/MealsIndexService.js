@@ -23,7 +23,8 @@ class MealsIndexService {
                 title: meal.title,
                 description: meal.description,
                 price: meal.price,
-                type: meal.type
+                type: meal.type,
+                image: meal.image
             }
         } )
 

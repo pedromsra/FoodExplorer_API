@@ -26,7 +26,7 @@ class SessionsCreateService {
             expiresIn
         })
 
-        return {token}
+        return {user, token}
     }
 }
 

@@ -29,7 +29,7 @@ class MealsCreateService {
 
         const ingredientMealId = await this.mealsRepository.createIngredientMeal({meal_id, ingredients: ingredientsList});
 
-        return ingredientMealId
+        return meal_id
     }
 }
 

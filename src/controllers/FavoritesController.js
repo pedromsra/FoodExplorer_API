@@ -3,6 +3,8 @@ const AppError = require("../utils/AppError");
 const FavoritesRepository = require("../repositories/FavoritesRepository");
 
 const FavoritesCreateService = require("../services/Favorites/FavoritesCreateService");
+const FavoritesIndexService = require("../services/Favorites/FavoritesIndexService");
+const FavoritesShowService = require("../services/Favorites/FavoritesShowService");
 const FavoritesDeleteService = require("../services/Favorites/FavoritesDeleteService");
 
 class FavoritesController {
@@ -38,6 +40,35 @@ class FavoritesController {
         }
 
         return response.json()
+    }
+
+    async index(request, response){
+        const user_id = request.user.id;
+        
+        const favoritesRepository = new FavoritesRepository();
+        const favoritesIndexService = new FavoritesIndexService(favoritesRepository);
+        
+        try {
+            const favoritesList = await favoritesIndexService.execute({user_id})
+            return response.json(favoritesList)
+        } catch {
+            throw new AppError(e, 401)
+        }
+    }
+
+    async show(request, response){
+        const user_id = request.user.id;
+        const { meal_id } = request.params;
+        
+        const favoritesRepository = new FavoritesRepository();
+        const favoritesShowService = new FavoritesShowService(favoritesRepository);
+        
+        try {
+            const favorite = await favoritesShowService.execute({user_id, meal_id})
+            return response.json(favorite)
+        } catch {
+            throw new AppError(e, 401)
+        }
     }
 }
 

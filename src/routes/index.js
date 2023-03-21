@@ -19,7 +19,6 @@ console.log("####################################")
 
 const pixRoutes = require("./pix.routes");
 
-
 const routes = Router();
 
 routes.use("/users", userRoutes);

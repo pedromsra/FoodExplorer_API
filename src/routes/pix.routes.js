@@ -12,5 +12,6 @@ pixRoutes.use(ensureAuthenticated);
 
 pixRoutes.put("/", pixController.generateQrCode)
 pixRoutes.post("/", pixController.generateCob)
+pixRoutes.get("/", pixController.indexByDay)
 
 module.exports = pixRoutes;

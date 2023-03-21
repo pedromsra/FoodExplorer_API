@@ -7,16 +7,6 @@ const favoritesRoutes = require("./favorites.routes");
 const adressRoutes = require("./adress.routes");
 const paymentsRoutes = require("./payments.routes");
 const ordersRoutes = require("./orders.routes");
-
-console.log("####################################")
-console.log("####################################")
-console.log("É necessário obter o clientID,")
-console.log("clientSecret e os certificados")
-console.log("na EFI (GerenciaNet)para conseguir")
-console.log("usar a parte PIX dessa API")
-console.log("####################################")
-console.log("####################################")
-
 const pixRoutes = require("./pix.routes");
 
 

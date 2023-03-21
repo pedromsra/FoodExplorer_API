@@ -20,18 +20,6 @@ console.log("####################################")
 const pixRoutes = require("./pix.routes");
 
 
-console.log("####################################")
-console.log("####################################")
-console.log("É necessário obter o clientID,")
-console.log("clientSecret e os certificados")
-console.log("na EFI (GerenciaNet)para conseguir")
-console.log("usar a parte PIX dessa API")
-console.log("####################################")
-console.log("####################################")
-
-const pixRoutes = require("./pix.routes");
-
-
 const routes = Router();
 
 routes.use("/users", userRoutes);

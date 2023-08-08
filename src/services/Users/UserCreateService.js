@@ -4,7 +4,7 @@ class UserCreateService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-
+    
     async execute({name, email, password, role_password}){
 
         const checkEmail = await this.userRepository.findByEmail(email);
@@ -21,11 +21,12 @@ class UserCreateService {
         const hashedPassword = await hash(password, 8);
 
         const adm_password = process.env.ADM_ROLE_PASSWORD || "123456";
-
+        
         if(role_password) {
             if(role_password !== adm_password) {
                 throw "Acesso negado, procure a admnistração"
             }
+
 
             const userCreated = this.userRepository.create({name, email, password: hashedPassword, role_password});
 

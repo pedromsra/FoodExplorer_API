@@ -76,13 +76,12 @@ class MealsRepository{
         return mealUpdated;
     }
 
-    async findMealsByIngredientsAndTitle({title, ingredient}){
+    async findMealsByIngredientsAndTitle({ingredient}){
         const meals = await knex("ingredientsMeal")
             .join("ingredients", "ingredients.id", "ingredientsMeal.ingredient_id")
             .join("meals", "meals.id", "ingredientsMeal.meal_id")
             .select("meals.id", "meals.title", "meals.description", "meals.image", "meals.price", "meals.type", "ingredients.id as ingId", "ingredients.name")
-            .whereLike("meals.title", `%${title}%`)
-            .whereLike("ingredients.name", ingredient)
+            .whereLike("ingredients.name", `%${ingredient}`)
             .orderBy("meals.title")
 
         return meals

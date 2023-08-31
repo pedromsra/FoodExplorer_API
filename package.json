@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
     "dev": "nodemon ./src/server.js",
-    "migrate": "knex migrate:latest",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate": "knex migrate:latest"
   },
   "keywords": [],
   "author": "Pedro de Araújo",
@@ -27,6 +26,7 @@
     "mysql2": "^3.1.0",
     "oracledb": "^5.5.0",
     "pg": "^8.9.0",
+    "pm2": "^5.3.0",
     "sqlite3": "^5.1.4",
     "tedious": "^15.1.2"
   },
